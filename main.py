@@ -1,17 +1,18 @@
-import subprocess
-import time
-
-timey = time.time()
-print int(timey)
-
-command = "srmcp file:///scratch/jenkins/jenkins/workspace/robot-g2-tests/testfile srm://prometheus.desy.de:8443/Users/kermit/testfile" + str(int(timey))
+from ProtocolTester import ProtocolTester
 
 
-proc = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-output, err = proc.communicate()
-proc.wait()
-print proc.returncode
-print "OUTPUT: ", output
-print "ERROR: ", err
+myProtocolTester = ProtocolTester()
+
+client = "srmcp"
+protocol = "srm"
+local_file = "/scratch/jenkins/jenkins/workspace/robot-g2-tests/testfile"
+remote_file = "/Users/kermit/testo"
+host = "prometheus.desy.de"
+
+myProtocolTester.copy_file(client=client, protocol=protocol, local_file=local_file, remote_file=remote_file, host=host)
+print "OUTPUT: ", myProtocolTester.output
+print "ERROR: ", myProtocolTester.error
+print "RETURNCODE: ", myProtocolTester.returncode
+
 
 
