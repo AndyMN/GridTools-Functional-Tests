@@ -16,21 +16,29 @@ class ProtocolTester:
         self.protocol = ""
         self.port = ""
         self.host = ""
+        self.extra_arguments = ""
+        self.timestamp = ""
+
 
         self.process = None
         self.command = ""
         self.output = ""
         self.error = ""
         self.returncode = None
+        self.host_string = ""
 
-    def _set_client(self, client):
+        self.ProtocolError = "Protocol isn't implemented !"
+        self.HostError = "Host isn't implemented !"
+
+    def set_client(self, client):
         self.client = client
 
-    def _set_protocol(self, protocol):
+    def set_protocol(self, protocol, port=-1):
         self.protocol = protocol
-
-    def _set_port(self, protocol):
-        self.port = protocol_ports[self.protocol]
+        if port < 0:
+            self.port = protocol_ports[protocol]
+        else:
+            self.port = port
 
     def _set_local_file(self, local_file):
         self.local_file = local_file if self.client in not_file_uri_schemes else "file://" + local_file
@@ -38,27 +46,60 @@ class ProtocolTester:
     def _set_remote_file(self, remote_file):
         self.remote_file = remote_file
 
-    def _set_host(self, host):
+    def set_host(self, host):
         self.host = host
 
-    def _create_command(self):
-        self.command = self.client + " " + self.local_file + " " + self.protocol + "://" + self.host + ":" + self.port + self.remote_file + timestamp
+    def set_extra_arguments(self, extra_arguments):
+        self.extra_arguments = extra_arguments
 
-    def copy_file(self, client, host, protocol, local_file, remote_file):
+    def copy_local_file(self, local_file, remote_file, add_timestamp=True):
 
-        self._set_client(client)
-        self._set_protocol(protocol)
-        self._set_local_file(local_file)
+        if self.protocol:
+            self._set_local_file(local_file)
+        else:
+            raise NotImplementedError(self.ProtocolError)
+
         self._set_remote_file(remote_file)
-        self._set_port(protocol)
-        self._set_host(host)
 
-        self._create_command()
+        self.host_string = self._create_host_string()
+
+        if add_timestamp:
+            self.timestamp = str(int(time.time()))
+
+        self.command = self.client + " " + self.extra_arguments + " " + self.local_file + " " + self.host_string + self.remote_file + self.timestamp
         self._execute_command(self.command)
 
-    def _execute_command(self, command):
+    def remove_remote_file(self, remote_file):
+        self._set_remote_file(remote_file)
 
+        self.host_string = self._create_host_string()
+        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_file
+
+
+    def _create_host_string(self):
+
+        if not self.protocol:
+            raise NotImplementedError(self.ProtocolError)
+
+        if not self.host:
+            raise NotImplementedError(self.HostError)
+
+        host_string = self.protocol + "://" + self.host + ":" + self.port
+
+        return host_string
+
+    def _execute_command(self, command):
         self.process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         self.output, self.error = self.process.communicate()
         self.process.wait()
         self.returncode = self.process.returncode
+
+    def output_should_be(self, expected_output):
+        if expected_output != self.output:
+            raise AssertionError("Expected output: " + expected_output + " but got output: " + self.output)
+
+    def error_should_be(self, expected_error):
+        if expected_error != self.error:
+            raise AssertionError("Expected error: " + expected_error + " but got error: " + self.error)
+
+
