@@ -88,6 +88,13 @@ class ProtocolTesterLib:
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
+
+    def remove_remote_directory(self, remote_directory):
+        self._set_remote_directory(remote_directory)
+        self.extra_arguments = self.extra_arguments + " -r " if " -r " not in self.extra_arguments else self.extra_arguments
+        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
+        self._execute_command(self.command)
+
     def _create_host_string(self):
 
         if not self.protocol:
