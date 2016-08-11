@@ -93,7 +93,6 @@ class ProtocolTesterLib:
         print "Executing: ", command
         self.process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         self.output, self.error = self.process.communicate()
-        self.process.wait()
         self.returncode = self.process.returncode
         print "OUTPUT:", self.output
 
