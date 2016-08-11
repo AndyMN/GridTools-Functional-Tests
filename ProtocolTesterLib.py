@@ -73,6 +73,21 @@ class ProtocolTesterLib:
         self.command = self.client + " " + self.extra_arguments + " " + self.local_file + " " + self.host_string + self.remote_file + self.timestamp
         self._execute_command(self.command)
 
+    def copy_remote_file(self, remote_file, local_file):
+
+        if self.protocol:
+            self._set_local_file(local_file)
+        else:
+            raise NotImplementedError(self.ProtocolError)
+
+        self._set_remote_file(remote_file)
+
+        self.host_string = self._create_host_string()
+
+        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_file + " " + self.local_file
+        self._execute_command(self.command)
+
+
     def remove_remote_file(self, remote_file):
         self._set_remote_file(remote_file)
 
