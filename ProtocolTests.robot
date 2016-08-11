@@ -38,7 +38,7 @@ CREATE DIR
 
 
 REMOVE DIR
-    SET CLIENT          srmrm
+    SET CLIENT          srmrmdir
     SET PROTOCOL        ${PROTOCOL}
     SET HOST            ${HOST}
     REMOVE REMOTE DIRECTORY  ${REMOTE_DIRECTORY}
