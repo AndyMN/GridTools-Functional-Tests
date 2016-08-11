@@ -18,6 +18,7 @@ class ProtocolTesterLib:
         self.host = ""
         self.extra_arguments = ""
         self.timestamp = ""
+        self.remote_directory = ""
 
 
         self.process = None
@@ -45,6 +46,9 @@ class ProtocolTesterLib:
 
     def _set_remote_file(self, remote_file):
         self.remote_file = remote_file
+
+    def _set_remote_directory(self, remote_directory):
+        self.remote_directory = remote_directory
 
     def set_host(self, host):
         self.host = host
@@ -76,6 +80,13 @@ class ProtocolTesterLib:
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_file
         self._execute_command(self.command)
 
+
+    def create_remote_directory(self, remote_directory):
+        self._set_remote_directory(remote_directory)
+
+        self.host_string = self._create_host_string()
+        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
+        self._execute_command(self.command)
 
     def _create_host_string(self):
 
