@@ -7,7 +7,7 @@ not_file_uri_schemes = ["dccp"]
 
 protocol_ports = {"srm": "8443", "gsidcap": "22128"}
 
-class ProtocolTester:
+class ProtocolTesterLib:
 
     def __init__(self):
         self.client = ""

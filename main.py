@@ -1,7 +1,7 @@
-from ProtocolTester import ProtocolTester
+from ProtocolTesterLib import ProtocolTesterLib
 
 
-myProtocolTester = ProtocolTester()
+myProtocolTester = ProtocolTesterLib()
 
 client = "srmcp"
 protocol = "srm"
