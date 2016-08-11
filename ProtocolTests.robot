@@ -8,7 +8,7 @@ Library  ProtocolTesterLib.py
 ${PROTOCOL}     srm
 ${HOST}         prometheus.desy.de
 
-${LOCAL_FILE}   /scratch/jenkins/jenkins/workspace/robot-g2-tests/testfile
+${LOCAL_FILE}   /scratch/jenkins/jenkins/workspace/robot-g2-tests/testfile777
 ${REMOTE_FILE}  /Users/kermit/testo
 
 
@@ -17,7 +17,7 @@ COPY FILE
     SET CLIENT          srmcp
     SET PROTOCOL        ${PROTOCOL}
     SET HOST            ${HOST}
-    COPY LOCAL FILE     ${LOCAL_FILE}   ${REMOTE_FILE}      add_timestamp=${FALSE}
+    COPY LOCAL FILE     ${LOCAL_FILE}   ${REMOTE_FILE}      add_timestamp=${TRUE}
     ERROR SHOULD BE     ${EMPTY}
 
 REMOVE FILE
