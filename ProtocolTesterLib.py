@@ -80,6 +80,10 @@ class ProtocolTesterLib:
         else:
             raise NotImplementedError(self.ProtocolError)
 
+        if self.client == "srmcp":
+            if " -streams_num " not in self.extra_arguments:
+                self.extra_arguments += " -streams_num=1 "
+
         self._set_remote_file(remote_file)
 
         self.host_string = self._create_host_string()
