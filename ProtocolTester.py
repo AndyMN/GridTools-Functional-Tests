@@ -74,6 +74,7 @@ class ProtocolTester:
 
         self.host_string = self._create_host_string()
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_file
+        self._execute_command(self.command)
 
 
     def _create_host_string(self):
@@ -89,6 +90,7 @@ class ProtocolTester:
         return host_string
 
     def _execute_command(self, command):
+        print "Executing: ", command
         self.process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         self.output, self.error = self.process.communicate()
         self.process.wait()
