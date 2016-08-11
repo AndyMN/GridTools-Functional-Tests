@@ -95,6 +95,7 @@ class ProtocolTesterLib:
         self.output, self.error = self.process.communicate()
         self.process.wait()
         self.returncode = self.process.returncode
+        print "OUTPUT:", self.output
 
     def output_should_be(self, expected_output):
         if expected_output != self.output:

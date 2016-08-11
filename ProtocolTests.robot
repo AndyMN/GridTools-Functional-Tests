@@ -17,7 +17,7 @@ COPY FILE
     SET CLIENT          srmcp
     SET PROTOCOL        ${PROTOCOL}
     SET HOST            ${HOST}
-    COPY LOCAL FILE     ${LOCAL_FILE}   ${REMOTE_FILE}  add_timestamp=False
+    COPY LOCAL FILE     ${LOCAL_FILE}   ${REMOTE_FILE}      add_timestamp=${FALSE}
     ERROR SHOULD BE     ${EMPTY}
 
 REMOVE FILE
