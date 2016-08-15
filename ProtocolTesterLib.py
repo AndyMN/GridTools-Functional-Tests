@@ -64,7 +64,7 @@ class ProtocolTesterLib:
 
         self._execute_command(self.command)
 
-        file_names = []
+        file_names = ["4"]
 
         if self.client == "srmls":
             file_names_dir = self.output.split("\n")
