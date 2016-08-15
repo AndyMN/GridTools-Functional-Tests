@@ -14,6 +14,8 @@ class DoorTesterLib:
             self.socket.connect((self.host, int(port)))
             print "Protocol: ", protocol
             print "Port: ", str(port)
-        except self.socket.error as e:
+        except:
             print "Protocol: ", protocol
-            print e
+            print "Port: ", str(port)
+            print "Not open !"
+            raise RuntimeError("Socket couldn't connect to Port: " + str(port))
