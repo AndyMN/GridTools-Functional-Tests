@@ -134,12 +134,15 @@ class ProtocolTesterLib:
         self.returncode = self.process.returncode
         print "OUTPUT:", self.output
 
-    def output_should_be(self, expected_output):
-        if expected_output != self.output:
-            raise AssertionError("Expected output: " + expected_output + " but got output: " + self.output)
 
-    def error_should_be(self, expected_error):
-        if expected_error != self.error:
-            raise AssertionError("Expected error: " + expected_error + " but got error: " + self.error)
+    def error_should_contain(self, expected_error):
+        errorstream = "STDOUT: " + self.output + " STDERR: " + self.error
+
+        if expected_error not in errorstream:
+            raise AssertionError("Expected error: " + expected_error + " but got: " + errorstream)
+
+    def process_should_return_sucessfully(self):
+        if self.returncode >= 1:
+            raise AssertionError("Process didn't execute sucessfully. Return code: " + self.returncode)
 
 
