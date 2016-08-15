@@ -56,7 +56,7 @@ class ProtocolTesterLib:
     def set_extra_arguments(self, extra_arguments):
         self.extra_arguments = extra_arguments
 
-    def copy_local_file(self, local_file, remote_file, add_timestamp=True):
+    def copy_local_file(self, local_file, remote_file, add_timestamp=False):
 
         if self.protocol:
             self._set_local_file(local_file)
