@@ -56,7 +56,25 @@ class ProtocolTesterLib:
     def set_extra_arguments(self, extra_arguments):
         self.extra_arguments = extra_arguments
 
-    def copy_local_file(self, local_file, remote_file, add_timestamp=False):
+    def get_remote_files_list(self, remote_directory):
+        self._set_remote_directory(remote_directory)
+
+        self.host_string = self._create_host_string()
+        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
+
+        self._execute_command(self.command)
+
+        file_names = []
+        
+        if self.client == "srmls":
+            file_names_dir = self.output.split("\n")
+            for size_name in file_names_dir:
+                file_name = size_name.split()[1]
+                file_names.append(file_name)
+
+        return file_names
+
+    def copy_local_file(self, local_file, remote_file):
 
         if self.protocol:
             self._set_local_file(local_file)
@@ -67,10 +85,7 @@ class ProtocolTesterLib:
 
         self.host_string = self._create_host_string()
 
-        if add_timestamp:
-            self.timestamp = str(int(time.time()))
-
-        self.command = self.client + " " + self.extra_arguments + " " + self.local_file + " " + self.host_string + self.remote_file + self.timestamp
+        self.command = self.client + " " + self.extra_arguments + " " + self.local_file + " " + self.host_string + self.remote_file
         self._execute_command(self.command)
 
     def copy_remote_file(self, remote_file, local_file):
