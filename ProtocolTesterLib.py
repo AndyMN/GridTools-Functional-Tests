@@ -143,7 +143,7 @@ class ProtocolTesterLib:
         if expected_error not in errorstream:
             raise AssertionError("Expected error: " + expected_error + " but got: " + errorstream)
 
-    def process_should_return_sucessfully(self):
+    def command_should_execute_successfully(self):
         if self.returncode >= 1:
             raise AssertionError("Process didn't execute sucessfully. Return code: " + self.returncode)
 
