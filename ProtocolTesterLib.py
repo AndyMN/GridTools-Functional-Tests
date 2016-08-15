@@ -74,6 +74,7 @@ class ProtocolTesterLib:
                 print file_name[1]
                 file_names.append(file_name[1])
 
+        print file_names
         return file_names
 
     def copy_local_file(self, local_file, remote_file):
