@@ -70,8 +70,9 @@ class ProtocolTesterLib:
             file_names_dir = self.output.split("\n")
             print "File names dir: ", file_names_dir
             for size_name in file_names_dir:
-                file_name = size_name.split()[1]
-                file_names.append(file_name)
+                file_name = size_name.split()
+                print file_name[1]
+                file_names.append(file_name[1])
 
         return file_names
 
