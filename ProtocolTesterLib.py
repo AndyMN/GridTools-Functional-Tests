@@ -5,7 +5,7 @@ timestamp = str(int(time.time()))
 
 not_file_uri_schemes = ["dccp"]
 
-protocol_ports = {"srm": "8443", "gsidcap": "22128", "gsiftp": "2811"}
+protocol_ports = {"srm": "8443", "gsidcap": "22128", "gsiftp": "2811", "http": "2288", "dcap": "22125"}
 
 class ProtocolTesterLib:
 
