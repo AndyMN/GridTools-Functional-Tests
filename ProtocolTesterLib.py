@@ -65,9 +65,10 @@ class ProtocolTesterLib:
         self._execute_command(self.command)
 
         file_names = []
-        
+
         if self.client == "srmls":
             file_names_dir = self.output.split("\n")
+            print "File names dir: ", file_names_dir
             for size_name in file_names_dir:
                 file_name = size_name.split()[1]
                 file_names.append(file_name)
