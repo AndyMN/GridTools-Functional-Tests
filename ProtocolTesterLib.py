@@ -144,7 +144,18 @@ class ProtocolTesterLib:
             raise AssertionError("Expected error: " + expected_error + " but got: " + errorstream)
 
     def command_should_execute_successfully(self):
-        if self.returncode >= 1:
-            raise AssertionError("Process didn't execute sucessfully. Return code: " + self.returncode)
+        client_executed_successfully = True
+        if self.client == "srmcp":
+            if "ERROR" in self.error:
+                client_executed_successfully = False
+        elif self.client == "dccp":
+            if "error" in self.error:
+                client_executed_successfully = False
+        elif self.client == "arccp":
+            if "ERROR" in self.error:
+                client_executed_successfully = False
+        
+        if not client_executed_successfully and self.returncode >= 1:
+            raise AssertionError("Process didn't execute sucessfully. Return code: " + str(self.returncode))
 
 
