@@ -1,0 +1,41 @@
+*** Settings ***
+Library		OperatingSystem
+Library		ProtocolTesterLib.py
+Library		DoorTesterLib.py	${HOST}
+Library		FileTesterLib.py	
+Test Template	COPY FILE WITH CLIENT AND PROTOCOL
+Test Teardown	REMOVE FILES WITH CLIENT AND PROTOCOL	srmrm	srm	${REMOTE_FILE}	${LOCAL_FILE}1
+
+*** Variables ***
+${HOST}         prometheus.desy.de
+
+${LOCAL_FILE}   /scratch/jenkins/jenkins/workspace/robot-g2-tests/testfile
+${REMOTE_FILE}  /Users/kermit/testo
+
+
+*** Test Cases ***
+SRMCP	srmcp	srm	${LOCAL_FILE}	${REMOTE_FILE}
+DCCP	dccp	gsidcap	${LOCAL_FILE}	${REMOTE_FILE}	-A
+GLOBUS	globus-url-copy	gsiftp	${LOCAL_FILE}	${REMOTE_FILE}
+ARCCP	arccp	srm	${LOCAL_FILE}	${REMOTE_FILE}
+
+
+*** Keywords ***
+
+COPY FILE WITH CLIENT AND PROTOCOL
+	[Arguments]	${CLIENT}	${PROTOCOL}	${LOCAL_FILE}	${REMOTE_FILE}	${EXTRA_ARGUMENTS}=${EMPTY}
+	SET CLIENT	${CLIENT}
+	SET PROTOCOL	${PROTOCOL}
+	SET EXTRA ARGUMENTS	${EXTRA_ARGUMENTS}
+	SET HOST	${HOST}
+	COPY LOCAL FILE	${LOCAL_FILE}	${REMOTE_FILE}
+	COPY REMOTE FILE	${REMOTE_FILE}	${LOCAL_FILE}1
+	FILES SHOULD BE THE SAME	${LOCAL_FILE}	${LOCAL_FILE}1
+
+REMOVE FILES WITH CLIENT AND PROTOCOL
+	[Arguments]	${CLIENT}	${PROTOCOL}	${REMOTE_FILE}	${LOCAL_FILE}
+	SET CLIENT	${CLIENT}
+	SET PROTOCOL	${PROTOCOL}
+	SET HOST	${HOST}
+	REMOVE REMOTE FILE	${REMOTE_FILE}
+	REMOVE FILE	${LOCAL_FILE}
