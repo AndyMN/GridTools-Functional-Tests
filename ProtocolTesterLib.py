@@ -73,7 +73,9 @@ class ProtocolTesterLib:
                 file_name = size_name.split()
                 #print file_name[1]
                 file_names_list.append(file_name[1])
+            print "DO I EVEN GET HERE ??????"
             print file_names_list
+            print "AND HERE !!!!????"
             return file_names_list
 
     def copy_local_file(self, local_file, remote_file):
