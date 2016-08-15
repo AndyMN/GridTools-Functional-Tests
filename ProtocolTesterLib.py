@@ -133,6 +133,8 @@ class ProtocolTesterLib:
         self.output, self.error = self.process.communicate()
         self.returncode = self.process.returncode
         print "OUTPUT:", self.output
+        print "ERROR: ", self.error
+        print "RETURN CODE: ", self.returncode
 
 
     def error_should_contain(self, expected_error):
