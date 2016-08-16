@@ -64,19 +64,16 @@ class ProtocolTesterLib:
 
         self._execute_command(self.command)
 
+        file_names_list = []
 
         if self.client == "srmls":
-            file_names_list = []
             file_names_dir = self.output.split("\n")
-            print "File names dir: ", file_names_dir
             for size_name in file_names_dir:
                 file_name = size_name.split()
                 if len(file_name) >= 2:
                     file_names_list.append(file_name[1])
-            print "DO I EVEN GET HERE ??????"
-            print file_names_list
-            print "AND HERE !!!!????"
-            return file_names_list
+
+        return file_names_list
 
     def copy_local_file(self, local_file, remote_file):
 
