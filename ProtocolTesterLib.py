@@ -110,6 +110,15 @@ class ProtocolTesterLib:
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_file + " " + self.local_file
         self._execute_command(self.command)
 
+    def copy_remote_to_remote(self, remote_file1, remote_file2):
+
+        self.local_file = remote_file1
+        self.remote_file = remote_file2
+
+        self.host_string - self._create_host_string()
+
+        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.local_file + " " + self.host_string + self.remote_file
+        self._execute_command(self.command)
 
     def remove_remote_file(self, remote_file):
         self._set_remote_file(remote_file)
