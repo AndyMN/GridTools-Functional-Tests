@@ -18,7 +18,7 @@ Test Template	COPY FILE WITH CLIENT AND PROTOCOL
 
 *** Test Cases ***
 SRMCP	srmcp	srm	${LOCAL_FILE}	${REMOTE_FILE}
-DCCP	dccp	gsidcap	${LOCAL_FILE}	${REMOTE_FILE}	${EXTRA_ARGUMENTS}=-A
+DCCP	dccp	gsidcap	${LOCAL_FILE}	${REMOTE_FILE}	EXTRA_ARGUMENTS=-A
 GLOBUS	globus-url-copy	gsiftp	${LOCAL_FILE}	${REMOTE_FILE}
 ARCCP	arccp	srm	${LOCAL_FILE}	${REMOTE_FILE}
 
