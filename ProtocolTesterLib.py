@@ -161,6 +161,8 @@ class ProtocolTesterLib:
 
         if expected_error not in errorstream:
             raise AssertionError("Expected error: " + expected_error + " but got: " + errorstream)
+        elif expected_error == "":
+            raise AssertionError("Expected no error but got: " + errorstream)
 
     def command_should_execute_successfully(self):
         client_executed_successfully = True
