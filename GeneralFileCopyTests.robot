@@ -1,14 +1,14 @@
 
 *** Settings ***
+Variables   UserDefinedVariables.py
+Resource    UserKeywords.robot
+
 Library		OperatingSystem
 Library		Collections
 
 Library		ProtocolTesterLib.py
 Library		DoorTesterLib.py	${HOST}
 Library		FileTesterLib.py
-
-Variables   UserDefinedVariables.py
-Resource    UserKeywords.robot
 
 
 Suite Setup	CHECK IF DOORS ARE OPEN		${PROTOCOL_PORTS}
