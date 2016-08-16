@@ -1,8 +1,10 @@
 *** Settings ***
-Variables  UserDefinedVariables.py
-Library    ProtocolTesterLib.py
-Library    DoorTesterLib.py     ${HOST}
-Library    FileTesterLib.py
+Variables  	UserDefinedVariables.py
+
+Library		Collections
+Library    	ProtocolTesterLib.py
+Library    	DoorTesterLib.py     ${HOST}
+Library    	FileTesterLib.py
 
 *** Keywords ***
 REMOVE FILE WITH CLIENT AND PROTOCOL
