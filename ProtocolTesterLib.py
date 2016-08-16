@@ -1,11 +1,11 @@
 import subprocess
 import time
+from UserDefinedVariables import *
 
 timestamp = str(int(time.time()))
 
 not_file_uri_schemes = ["dccp"]
 
-protocol_ports = {"srm": "8443", "gsidcap": "22128", "gsiftp": "2811", "http": "2288", "dcap": "22125"}
 
 class ProtocolTesterLib:
 
@@ -37,12 +37,15 @@ class ProtocolTesterLib:
     def set_protocol(self, protocol, port=-1):
         self.protocol = protocol
         if port < 0:
-            self.port = protocol_ports[protocol]
+            self.port = PROTOCOL_PORTS[protocol]
         else:
             self.port = port
 
     def _set_local_file(self, local_file):
-        self.local_file = local_file if self.client in not_file_uri_schemes else "file://" + local_file
+        if self.client not in not_file_uri_schemes and "file://" not in local_file:
+            self.local_file = "file://" + local_file
+        else:
+            self.local_file = local_file
 
     def _set_remote_file(self, remote_file):
         self.remote_file = remote_file
