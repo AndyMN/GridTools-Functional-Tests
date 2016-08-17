@@ -88,9 +88,11 @@ class ProtocolTesterLib:
         if self.client == "srmls":
             file_names_dir = self.output.split("\n")
             for size_name in file_names_dir:
-                file_name = size_name.split()
-                if len(file_name) >= 2:
-                    file_names_list.append(file_name[1])
+                size_name_split = size_name.split()
+                if len(size_name_split) >= 2:
+                    file_name = size_name_split[1]
+                    if file_name[-1] != "/":
+                        file_names_list.append(file_name[1])
 
         return file_names_list
 
