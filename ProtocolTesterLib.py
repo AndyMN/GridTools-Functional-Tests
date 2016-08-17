@@ -78,6 +78,20 @@ class ProtocolTesterLib:
 
         return file_names_list
 
+    def get_space_tokens(self, base_dir, space_desc=None):
+        self._set_remote_directory(base_dir)
+
+        self.host_string = self._create_host_string()
+
+        if self.client == "srm-get-space-tokens":
+            if space_desc and "space_desc" not in self.extra_arguments:
+                self.extra_arguments += " -space_desc=" + space_desc
+
+        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
+        self._execute_command(self.command)
+
+
+
     def get_remote_directories_list(self, remote_directory):
         self._set_remote_directory(remote_directory)
 
@@ -96,7 +110,7 @@ class ProtocolTesterLib:
                     dir_name = size_dir_split[1]
                     if dir_name[-1] == "/":
                         directories_list.append(dir_name)
-                        
+
         return directories_list
 
     def copy_local_file(self, local_file, remote_file):
