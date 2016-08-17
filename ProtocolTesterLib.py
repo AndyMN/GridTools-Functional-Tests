@@ -227,7 +227,7 @@ class ProtocolTesterLib:
                     raise ValueError(other + " not in list of possible permissions for other: " + possible_permissions)
 
         self._set_remote_directory(remote_directory)
-        self.host_string = self._create_host_string(self.protocol1, self.host1, self.port1)
+        self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
