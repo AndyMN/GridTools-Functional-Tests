@@ -229,6 +229,16 @@ class ProtocolTesterLib:
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
+    def perform_arbitrary_command_on_remote_dir(self, remote_dir):
+
+        self._set_remote_directory(remote_dir)
+
+        self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
+
+        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
+        self._execute_command(self.command)
+
+
     def _create_host_string(self, protocol, port, host):
 
         if not protocol:
