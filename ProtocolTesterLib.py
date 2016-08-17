@@ -13,9 +13,15 @@ class ProtocolTesterLib:
         self.client = ""
         self.local_file = ""
         self.remote_file = ""
-        self.protocol = ""
-        self.port = ""
-        self.host = ""
+
+        self.protocol1 = ""
+        self.port1 = ""
+        self.host1 = ""
+
+        self.protocol2 = ""
+        self.port2 = ""
+        self.host2 = ""
+
         self.extra_arguments = ""
         self.timestamp = ""
         self.remote_directory = ""
@@ -34,12 +40,19 @@ class ProtocolTesterLib:
     def set_client(self, client):
         self.client = client
 
-    def set_protocol(self, protocol, port=-1):
-        self.protocol = protocol
-        if port < 0:
-            self.port = PROTOCOL_PORTS[protocol]
+    def set_protocol(self, protocol1, port1=-1, protocol2=None, port2=-1):
+        self.protocol1 = protocol1
+        if port1 < 0:
+            self.port1 = PROTOCOL_PORTS[protocol1]
         else:
-            self.port = port
+            self.port1 = port1
+
+        if protocol2:
+            self.protocol2 = protocol2
+            if port2 < 0:
+                self.port2 = PROTOCOL_PORTS[protocol2]
+            else:
+                self.port2 = port2
 
     def _set_local_file(self, local_file):
         if self.client not in not_file_uri_schemes and "file://" not in local_file:
@@ -53,8 +66,11 @@ class ProtocolTesterLib:
     def _set_remote_directory(self, remote_directory):
         self.remote_directory = remote_directory
 
-    def set_host(self, host):
-        self.host = host
+    def set_host(self, host1, host2=None):
+        self.host1 = host1
+
+        if host2:
+            self.host2 = host2
 
     def set_extra_arguments(self, extra_arguments):
         self.extra_arguments = extra_arguments
@@ -62,7 +78,7 @@ class ProtocolTesterLib:
     def get_remote_files_list(self, remote_directory):
         self._set_remote_directory(remote_directory)
 
-        self.host_string = self._create_host_string()
+        self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
 
         self._execute_command(self.command)
@@ -81,7 +97,7 @@ class ProtocolTesterLib:
     def get_space_tokens(self, base_dir, space_desc=None):
         self._set_remote_directory(base_dir)
 
-        self.host_string = self._create_host_string()
+        self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
 
         if self.client == "srm-get-space-tokens":
             if space_desc and "space_desc" not in self.extra_arguments:
@@ -95,7 +111,7 @@ class ProtocolTesterLib:
     def get_remote_directories_list(self, remote_directory):
         self._set_remote_directory(remote_directory)
 
-        self.host_string = self._create_host_string()
+        self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
 
         self._execute_command(self.command)
@@ -115,21 +131,21 @@ class ProtocolTesterLib:
 
     def copy_local_file(self, local_file, remote_file):
 
-        if self.protocol:
+        if self.protocol1:
             self._set_local_file(local_file)
         else:
             raise NotImplementedError(self.ProtocolError)
 
         self._set_remote_file(remote_file)
 
-        self.host_string = self._create_host_string()
+        self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
 
         self.command = self.client + " " + self.extra_arguments + " " + self.local_file + " " + self.host_string + self.remote_file
         self._execute_command(self.command)
 
     def copy_remote_file(self, remote_file, local_file):
 
-        if self.protocol:
+        if self.protocol1:
             self._set_local_file(local_file)
         else:
             raise NotImplementedError(self.ProtocolError)
@@ -140,7 +156,7 @@ class ProtocolTesterLib:
 
         self._set_remote_file(remote_file)
 
-        self.host_string = self._create_host_string()
+        self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
 
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_file + " " + self.local_file
         self._execute_command(self.command)
@@ -150,15 +166,16 @@ class ProtocolTesterLib:
         self.local_file = remote_file1
         self.remote_file = remote_file2
 
-        self.host_string = self._create_host_string()
+        host_string1 = self._create_host_string(self.protocol1, self.port1, self.host1)
+        host_string2 = self._create_host_string(self.protocol2, self.port2, self.host2)
 
-        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.local_file + " " + self.host_string + self.remote_file
+        self.command = self.client + " " + self.extra_arguments + " " + host_string1 + self.local_file + " " + host_string2 + self.remote_file
         self._execute_command(self.command)
 
     def remove_remote_file(self, remote_file):
         self._set_remote_file(remote_file)
 
-        self.host_string = self._create_host_string()
+        self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_file
         self._execute_command(self.command)
 
@@ -166,7 +183,7 @@ class ProtocolTesterLib:
     def create_remote_directory(self, remote_directory):
         self._set_remote_directory(remote_directory)
 
-        self.host_string = self._create_host_string()
+        self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
@@ -174,7 +191,7 @@ class ProtocolTesterLib:
     def remove_remote_directory(self, remote_directory):
         self._set_remote_directory(remote_directory)
 
-        self.host_string = self._create_host_string()
+        self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
@@ -208,19 +225,19 @@ class ProtocolTesterLib:
                     raise ValueError(other + " not in list of possible permissions for other: " + possible_permissions)
 
         self._set_remote_directory(remote_directory)
-        self.host_string = self._create_host_string()
+        self.host_string = self._create_host_string(self.protocol1, self.host1, self.port1)
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
-    def _create_host_string(self):
+    def _create_host_string(self, protocol, port, host):
 
-        if not self.protocol:
+        if not protocol:
             raise NotImplementedError(self.ProtocolError)
 
-        if not self.host:
+        if not host:
             raise NotImplementedError(self.HostError)
 
-        host_string = self.protocol + "://" + self.host + ":" + self.port
+        host_string = protocol + "://" + host + ":" + port
 
         return host_string
 
@@ -247,7 +264,7 @@ class ProtocolTesterLib:
 
         if "error" in self.error or "ERROR" in self.error:
             client_executed_successfully = False
-            
+
         if self.returncode >= 1 or not client_executed_successfully:
             raise AssertionError("Process didn't execute command properly. \n Return Code: " + str(self.returncode) +"\n STDERR: " + self.error + "\n STDOUT: " + self.output)
 
