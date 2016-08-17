@@ -255,6 +255,6 @@ class ProtocolTesterLib:
                 client_executed_successfully = False
 
         if self.returncode >= 1 or not client_executed_successfully:
-            raise AssertionError("Process didn't execute command properly. \n Return Code: " + self.returncode +"\n STDERR: " + self.error + "\n STDOUT: " + self.output)
+            raise AssertionError("Process didn't execute command properly. \n Return Code: " + str(self.returncode) +"\n STDERR: " + self.error + "\n STDOUT: " + self.output)
 
 
