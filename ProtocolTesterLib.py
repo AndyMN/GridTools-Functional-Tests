@@ -143,6 +143,40 @@ class ProtocolTesterLib:
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
+    def change_remote_permissions(self, remote_directory, perm_type=None, owner=None, group=None, other=None):
+        if self.client == "srm-set-permissions":
+            possible_types = ["ADD", "REMOVE", "CHANGE"]
+            possible_permissions = ["NONE", "X", "W", "WR", "R", "RX", "RW", "RWX"]
+
+            if perm_type and "type" not in self.extra_arguments:
+                if perm_type in possible_types:
+                    self.extra_arguments += " -type=" + perm_type
+                else:
+                    raise ValueError(perm_type + " not in list of possible types: " + possible_types)
+
+            if owner and "owner" not in self.extra_arguments:
+                if owner in possible_permissions:
+                    self.extra_arguments += " -owner=" + owner
+                else:
+                    raise ValueError(owner + " not in list of possible permissions for owner: " + possible_permissions)
+
+            if group and "group" not in self.extra_arguments:
+                if group in possible_permissions:
+                    self.extra_arguments += " -group=" + group
+                else:
+                    raise ValueError(group + " not in list of possible permissions for group: " + possible_permissions)
+
+            if other and "other" not in self.extra_arguments:
+                if other in possible_permissions:
+                    self.extra_arguments += " -other=" + other
+                else:
+                    raise ValueError(other + " not in list of possible permissions for other: " + possible_permissions)
+
+        self._set_remote_directory(remote_directory)
+        self.host_string = self._create_host_string()
+        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
+        self._execute_command(self.command)
+
     def _create_host_string(self):
 
         if not self.protocol:
