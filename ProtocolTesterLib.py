@@ -78,6 +78,27 @@ class ProtocolTesterLib:
 
         return file_names_list
 
+    def get_remote_directories_list(self, remote_directory):
+        self._set_remote_directory(remote_directory)
+
+        self.host_string = self._create_host_string()
+        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
+
+        self._execute_command(self.command)
+
+        directories_list = []
+
+        if self.client == "srmls":
+            ls_names_dir = self.output.split("\n")
+            for size_name in ls_names_dir:
+                size_dir_split = size_name.split()
+                if len(size_dir_split) >= 2:
+                    dir_name = size_dir_split[1]
+                    if dir_name[-1] == "/":
+                        directories_list.append(dir_name)
+                        
+        return directories_list
+
     def copy_local_file(self, local_file, remote_file):
 
         if self.protocol:
