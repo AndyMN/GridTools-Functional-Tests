@@ -1,0 +1,37 @@
+*** Settings ***
+
+Variables	UserDefinedVariables.py
+Resource	UserKeywords.robot
+
+Library		String
+Library		Collections
+Library		DoorTesterLib.py	${HOST}
+Library		ProtocolTesterLib.py
+
+Suite Setup	TEST PROTOCOL DOOR	${PROTOCOL}	${PORT}
+
+
+*** Variables ***
+
+${CLIENT}	srmls
+${PROTOCOL}	srm
+${PORT}		&{PROTOCOL_PORTS}[${PROTOCOL}]
+
+
+
+
+*** Test Cases ***
+VALID PATH
+	SET CLIENT	${CLIENT}
+	SET PROTOCOL	${PROTOCOL}	${PORT}
+	SET HOST	${HOST}
+	GET REMOTE FILES LIST	${REMOTE_DIR}
+	COMMAND SHOULD EXECUTE SUCCESSFULLY
+	
+INVALID PATH
+	SET CLIENT	${CLIENT}
+	SET PROTOCOL	${PROTOCOL}	${PORT}
+	SET HOST	${HOST}
+	${FAKE_DIR}=	REPLACE STRING	${TEST NAME}	${SPACE}	${EMPTY}
+	GET REMOTE FILES LIST	${REMOTE_DIR}${FAKE_DIR}
+	ERROR SHOULD CONTAIN	SRM_INVALID_PATH
