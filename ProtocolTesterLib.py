@@ -244,16 +244,10 @@ class ProtocolTesterLib:
 
     def command_should_execute_successfully(self):
         client_executed_successfully = True
-        if self.client == "srmcp":
-            if "ERROR" in self.error:
-                client_executed_successfully = False
-        elif self.client == "dccp":
-            if "error" in self.error:
-                client_executed_successfully = False
-        elif self.client == "arccp":
-            if "ERROR" in self.error:
-                client_executed_successfully = False
 
+        if "error" in self.error or "ERROR" in self.error:
+            client_executed_successfully = False
+            
         if self.returncode >= 1 or not client_executed_successfully:
             raise AssertionError("Process didn't execute command properly. \n Return Code: " + str(self.returncode) +"\n STDERR: " + self.error + "\n STDOUT: " + self.output)
 
