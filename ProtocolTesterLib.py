@@ -115,7 +115,7 @@ class ProtocolTesterLib:
         self.local_file = remote_file1
         self.remote_file = remote_file2
 
-        self.host_string - self._create_host_string()
+        self.host_string = self._create_host_string()
 
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.local_file + " " + self.host_string + self.remote_file
         self._execute_command(self.command)
