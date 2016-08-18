@@ -8,14 +8,11 @@ Source: https://github.com/AndyMN/robot-g2-tests/archive/master.zip
 URL: https://github.com/AndyMN/robot-g2-tests.git
 BuildRoot: %{_tmppath}/%{name}-root
 BuildArch: noarch
-BuildRequires: python2-devel
 Requires: python >= 2.7
 Requires: dcache-srmclient
 Requires: globus-gass-copy-progs
 Requires: nordugrid-arc-client
 
-
-%define python2_sitelib /usr/lib/python2.7/site-packages
 
 
 %description
