@@ -12,11 +12,11 @@ for test in $TESTS; do
 	then
 		robot -o ${name}_output $test && OUTPUTS="$OUTPUTS ${name}_output.xml" || :
 	else
-		robot -o ${name}_outputSRMV2 $test --variable SRM_VERSION:2 && OUTPUTS="$OUTPUTS ${name}_outputSRMV2.xml" || :
+		robot -o ${name}_outputSRMV2 --variable SRM_VERSION:2 $test && OUTPUTS="$OUTPUTS ${name}_outputSRMV2.xml" || :
 		IsOlderThanCutoff=$(python IsdCacheVersionOlderThan.py $CUTOFF_V1)
 		if [[$IsOlderThanCutOff == "true"]]
 		then
-			robot -o ${name}_outputSRMV1 $test --variable SRM_VERSION:1 && OUTPUTS="$OUTPUTS ${name}_outputSRMV1.xml" || :		
+			robot -o ${name}_outputSRMV1 --variable SRM_VERSION:1 $test && OUTPUTS="$OUTPUTS ${name}_outputSRMV1.xml" || :		
 		fi
 	fi
 done
