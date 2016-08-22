@@ -21,7 +21,7 @@ major_version_compare, minor_version_compare = get_versions(version_compare)
 
 
 # Find dCache version of system under test
-process = subprocess.Popen("curl -D- -s http://" + os.environ.get(['DFTS_SUT']) + ":2880/ |grep Serv", shell=True, stdout=subprocess.PIPE)
+process = subprocess.Popen("curl -D- -s http://" + os.environ.get('DFTS_SUT') + ":2880/ |grep Serv", shell=True, stdout=subprocess.PIPE)
 
 output, error = process.communicate()
 
