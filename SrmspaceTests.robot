@@ -27,7 +27,8 @@ GET SPACE TOKENS
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}
 	SET EXTRA ARGUMENTS	-${SRM_VERSION} -retry_num=0
-	GET SPACE TOKENS	/	space_desc=release_test_space
+	${SPACE_DESC}=	SET VARIABLE IF		'%{DFTS_SUT}' == 'prometheus.desy.de'	${EMPTY}	release_test_space	
+	GET SPACE TOKENS	/	space_desc=${SPACE_DESC}
 	COMMAND SHOULD EXECUTE SUCCESSFULLY
 
 
