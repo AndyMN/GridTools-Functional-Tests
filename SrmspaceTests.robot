@@ -17,18 +17,25 @@ ${CLIENT}	srm-get-space-tokens
 ${PROTOCOL}	srm
 ${PORT}		&{PROTOCOL_PORTS}[${PROTOCOL}]
 
+${SPACE_DESC}	robot-g2-testspace
+
 # Default SRM version, can be overwritten in command line call
 ${SRM_VERSION}	2
 
 
 *** Test Cases ***
 GET SPACE TOKENS
-	SET CLIENT	${CLIENT}
+	SET CLIENT	srm-reserve-space
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}
 	SET EXTRA ARGUMENTS	-${SRM_VERSION} -retry_num=0
-	${SPACE_DESC}=	SET VARIABLE IF		'%{DFTS_SUT}' == 'prometheus.desy.de'	${EMPTY}	release_test_space	
-	GET SPACE TOKENS	/	space_desc=${SPACE_DESC}
+	${SPACE_TOKEN}=		RESERVE SPACE	${SPACE_DESC}	guaranteed_size=2	retention_policy=REPLICA
+	COMMAND SHOULD EXECUTE SUCCESSFULLY
+	SET CLIENT	srm-get-space-tokens
+	GET SPACE TOKENS	space_desc=${SPACE_DESC}
+	COMMAND SHOULD EXECUTE SUCCESSFULLY
+	SET CLIENT	srm-release-space
+	RELEASE SPACE	${SPACE_TOKEN}
 	COMMAND SHOULD EXECUTE SUCCESSFULLY
 
 
