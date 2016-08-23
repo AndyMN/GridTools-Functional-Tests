@@ -25,6 +25,7 @@ ${SRM_VERSION}	2
 
 *** Test Cases ***
 GET SPACE TOKENS
+	[Documentation]	Checks if it can get space tokens from the host
 	SET CLIENT	srm-reserve-space
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}
@@ -40,6 +41,7 @@ GET SPACE TOKENS
 
 
 PUT REMOVED
+	[Documentation]	(Weird test, ported from G2) Copies a file then removes it and then copies it again.
 	SET CLIENT	srmcp
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}

@@ -28,6 +28,7 @@ ${SRM_VERSION}	2
 
 *** Test Cases ***
 COPY MD5
+	[Documentation]	Copy a file and use md5 for the checksum. After copying it back it should still be the same
 	SET CLIENT	${CLIENT}
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}
@@ -43,6 +44,7 @@ COPY MD5
 
 
 COPY BAD CHECKSUM MD5
+	[Documentation]	Copies a file from which the content (and thus checksum calculated with md5) changes during the copy call (/proc/uptime).
 	SET CLIENT	${CLIENT}
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}
@@ -52,6 +54,7 @@ COPY BAD CHECKSUM MD5
 	ERROR SHOULD CONTAIN		Checksum mismatch
 	
 COPY BAD CHECKSUM
+	[Documentation]	Copies a file from which the content (and thus checksum) changes during the copy call (/proc/uptime)
 	SET CLIENT	${CLIENT}
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}
@@ -61,6 +64,7 @@ COPY BAD CHECKSUM
 	ERROR SHOULD CONTAIN	Checksum mismatch
 
 COPY DIR NOT EXIST
+	[Documentation]	Copies a file to a directory that doesn't exist yet. This should create the directory on the fly
 	SET CLIENT	${CLIENT}
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}
@@ -81,6 +85,7 @@ COPY DIR NOT EXIST
 
 
 COPY HTTP
+	[Documentation]	Copy a file using srm and then copy it with http to srm on the same host again.
 	[Tags]	broken_on_srmV1
 	SET CLIENT	${CLIENT}
 	SET PROTOCOL	${PROTOCOL}	${PORT}

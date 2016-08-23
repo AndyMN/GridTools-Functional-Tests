@@ -23,6 +23,7 @@ ${SRM_VERSION}	2
 
 *** Test Cases ***
 VALID PATH
+	[Documentation]	Try to ls a valid directory path
 	SET CLIENT	${CLIENT}
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}
@@ -31,6 +32,7 @@ VALID PATH
 	COMMAND SHOULD EXECUTE SUCCESSFULLY
 	
 INVALID PATH
+	[Documentation]	Try to ls an invalid directory path
 	SET CLIENT	${CLIENT}
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}

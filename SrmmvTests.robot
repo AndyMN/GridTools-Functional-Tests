@@ -26,6 +26,7 @@ ${SRM_VERSION}	2
 
 *** Test Cases ***
 SRMMV INTO SAME DIR
+	[Documentation]	Moving a file to the same directory with a different name (should just rename file)
 	SET CLIENT	srmcp
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}

@@ -22,6 +22,7 @@ ${CLIENT}	globus-url-copy
 
 *** Test Cases ***
 NO DCAU
+	[Documentation] Tries copying a file without data channel authentication using gsiftp.
 	SET CLIENT	${CLIENT}
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}
@@ -32,6 +33,7 @@ NO DCAU
 	COMMAND SHOULD EXECUTE SUCCESSFULLY
 
 MULTIPLE PARALLEL STREAMS
+	[Documentatio]	Tries to copy a file using 10 parallel data streams using gsiftp
 	SET CLIENT	${CLIENT}
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}

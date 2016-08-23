@@ -23,6 +23,7 @@ ${SRM_VERSION}	2
 
 *** Test Cases ***
 CHANGE DIR PERMISSIONS
+	[Documentation]	Changes the permissions of a directory (Other gets no permissions)
 	SET CLIENT	srmmkdir
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}

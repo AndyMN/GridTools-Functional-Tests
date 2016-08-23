@@ -26,6 +26,7 @@ ARCCP	arccp	srm	${LOCAL_FILE}	${REMOTE_FILE}
 *** Keywords ***
 
 COPY FILE WITH CLIENT AND PROTOCOL
+	[Documentation]	General test case structure for copying a file with a specific client using a specific protocol
 	[Arguments]	${CLIENT}	${PROTOCOL}	${LOCAL_FILE}	${REMOTE_FILE}	${EXTRA_ARGUMENTS}=${EMPTY}     ${PROTOCOL_PORT}=-1
 	CREATE FILE	${LOCAL_FILE}${TEST NAME}	This is a testfile for ${TEST NAME}
 	SET CLIENT	${CLIENT}

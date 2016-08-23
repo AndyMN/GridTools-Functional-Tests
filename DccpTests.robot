@@ -19,6 +19,7 @@ ${PORT}		&{PROTOCOL_PORTS}[${PROTOCOL}]
 
 *** Test Cases ***
 PRESTAGE ON DIR
+	[Documentation]		Tries prestaging on a directory which should fail because it only works on files
 	SET CLIENT	${CLIENT}
 	SET PROTOCOL	${PROTOCOL}	${PORT}
 	SET HOST	${HOST}
