@@ -125,6 +125,14 @@ class ProtocolTesterLib:
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
+        space_token = -1
+
+        if "Space token" in self.output:
+            equal_sign_index = self.output.find("=")
+            space_token = self.output[equal_sign_index + 1:]
+
+        return space_token
+
     def release_space(self, space_token, remote_directory="/"):
 
         self._set_remote_directory(remote_directory)
@@ -137,7 +145,7 @@ class ProtocolTesterLib:
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
-    
+
 
     def get_remote_directories_list(self, remote_directory):
         self._set_remote_directory(remote_directory)
