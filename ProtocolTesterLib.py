@@ -2,9 +2,14 @@ import subprocess
 import time
 from UserDefinedVariables import *
 
-timestamp = str(int(time.time()))
+not_file_uri_schemes = ["dccp"]    # Protocols that don't use the file:// part
 
-not_file_uri_schemes = ["dccp"]
+"""
+This is the main library used for doing the G2 tests.
+
+Every function is a keyword callable from robot
+
+"""
 
 
 class ProtocolTesterLib:
@@ -101,28 +106,32 @@ class ProtocolTesterLib:
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
 
+        specific_arguments = " "
+
         if self.client == "srm-get-space-tokens":
             if space_desc and "space_desc" not in self.extra_arguments:
-                self.extra_arguments += " -space_desc=" + space_desc
+                specific_arguments += " -space_desc=" + space_desc
 
-        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
+        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
     def reserve_space(self, space_desc, guaranteed_size="2", retention_policy="REPLICA", remote_directory="/"):
 
         self._set_remote_directory(remote_directory)
 
+        specific_arguments = " "
+
         if self.client == "srm-reserve-space":
             if space_desc and "space_desc" not in self.extra_arguments:
-                self.extra_arguments += " -space_desc=" + space_desc
+                specific_arguments += " -space_desc=" + space_desc
             if guaranteed_size and "guaranteed_size" not in self.extra_arguments:
-                self.extra_arguments += " -guaranteed_size=" + guaranteed_size
+                specific_arguments += " -guaranteed_size=" + guaranteed_size
             if retention_policy and "retention_policy" not in self.extra_arguments:
-                self.extra_arguments += " -retention_policy=" + retention_policy
+                specific_arguments += " -retention_policy=" + retention_policy
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
 
-        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
+        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
         space_token = -1
@@ -137,12 +146,14 @@ class ProtocolTesterLib:
 
         self._set_remote_directory(remote_directory)
 
+        specific_arguments = " "
+
         if self.client == "srm-release-space":
             if space_token and "space_token" not in self.extra_arguments:
-                self.extra_arguments += " -space_token=" + space_token
+                specific_arguments += " -space_token=" + space_token
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
-        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
+        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
 
@@ -189,15 +200,17 @@ class ProtocolTesterLib:
         else:
             raise NotImplementedError(self.ProtocolError)
 
+        specific_arguments = " "
+
         if self.client == "srmcp":
             if " -streams_num " not in self.extra_arguments:
-                self.extra_arguments += " -streams_num=1 "
+                specific_arguments += " -streams_num=1 "
 
         self._set_remote_file(remote_file)
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
 
-        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_file + " " + self.local_file
+        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + self.remote_file + " " + self.local_file
         self._execute_command(self.command)
 
     def copy_remote_to_remote(self, remote_file1, remote_file2):
@@ -235,37 +248,39 @@ class ProtocolTesterLib:
         self._execute_command(self.command)
 
     def change_remote_permissions(self, remote_directory, perm_type=None, owner=None, group=None, other=None):
+        specific_arguments = " "
+
         if self.client == "srm-set-permissions":
             possible_types = ["ADD", "REMOVE", "CHANGE"]
             possible_permissions = ["NONE", "X", "W", "WR", "R", "RX", "RW", "RWX"]
 
             if perm_type and "type" not in self.extra_arguments:
                 if perm_type in possible_types:
-                    self.extra_arguments += " -type=" + perm_type
+                    specific_arguments += " -type=" + perm_type
                 else:
                     raise ValueError(perm_type + " not in list of possible types: " + possible_types)
 
             if owner and "owner" not in self.extra_arguments:
                 if owner in possible_permissions:
-                    self.extra_arguments += " -owner=" + owner
+                    specific_arguments += " -owner=" + owner
                 else:
                     raise ValueError(owner + " not in list of possible permissions for owner: " + possible_permissions)
 
             if group and "group" not in self.extra_arguments:
                 if group in possible_permissions:
-                    self.extra_arguments += " -group=" + group
+                    specific_arguments += " -group=" + group
                 else:
                     raise ValueError(group + " not in list of possible permissions for group: " + possible_permissions)
 
             if other and "other" not in self.extra_arguments:
                 if other in possible_permissions:
-                    self.extra_arguments += " -other=" + other
+                    specific_arguments += " -other=" + other
                 else:
                     raise ValueError(other + " not in list of possible permissions for other: " + possible_permissions)
 
         self._set_remote_directory(remote_directory)
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
-        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
+        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
     def perform_arbitrary_command_on_remote_dir(self, remote_dir):
