@@ -6,7 +6,7 @@ not_file_uri_schemes = ["dccp"]    # Protocols that don't use the file:// part
 
 class ProtocolTesterLib:
     """
-    Library for client and protocol testing (Test Suite).
+    Library for client and protocol testing (Grid Tools Functional Test Suite).
 
     In this library you will find all of the keywords needed to be able to write basic protocol and client tests.
 
@@ -196,7 +196,7 @@ class ProtocolTesterLib:
             if space_desc and "space_desc" not in self.extra_arguments:
                 specific_arguments += " -space_desc=" + space_desc
 
-        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + "/"
+        self.command = self.client + " " + self.extra_arguments + specific_arguments + " " +self.host_string + "/"
         self._execute_command(self.command)
 
     def reserve_space(self, space_desc, guaranteed_size="2", retention_policy="REPLICA"):
@@ -225,7 +225,7 @@ class ProtocolTesterLib:
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
 
-        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + "/"
+        self.command = self.client + " " + self.extra_arguments + specific_arguments + " " + self.host_string + "/"
         self._execute_command(self.command)
 
         space_token = -1
@@ -252,7 +252,7 @@ class ProtocolTesterLib:
                 specific_arguments += " -space_token=" + space_token
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
-        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + "/"
+        self.command = self.client + " " + self.extra_arguments + specific_arguments + " " + self.host_string + "/"
         self._execute_command(self.command)
 
 
@@ -337,7 +337,7 @@ class ProtocolTesterLib:
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
 
-        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + self.remote_file + " " + self.local_file
+        self.command = self.client + " " + self.extra_arguments + specific_arguments + " " + self.host_string + self.remote_file + " " + self.local_file
         self._execute_command(self.command)
 
     def copy_remote_to_remote(self, remote_file1, remote_file2):
@@ -456,7 +456,7 @@ class ProtocolTesterLib:
 
         self._set_remote_directory(remote_directory)
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
-        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + self.remote_directory
+        self.command = self.client + " " + self.extra_arguments + specific_arguments + " " + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
     def perform_arbitrary_command_on_remote_dir(self, remote_dir):
