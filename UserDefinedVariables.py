@@ -13,4 +13,6 @@ LOCAL_FILE = LOCAL_DIR + "testfile"
 #REMOTE_DIR = "/Users/kermit/"
 #REMOTE_DIR = "/data/g2/"
 REMOTE_DIR = os.environ.get('REMOTE_DIR')
-REMOTE_FILE = REMOTE_DIR + "testo"
+REMOTE_FILE = "testo"
+if REMOTE_DIR:
+    REMOTE_FILE = REMOTE_DIR + "testo"

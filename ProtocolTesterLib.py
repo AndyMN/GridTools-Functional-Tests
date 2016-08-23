@@ -1,18 +1,16 @@
 import subprocess
-import time
 from UserDefinedVariables import *
 
 not_file_uri_schemes = ["dccp"]    # Protocols that don't use the file:// part
 
-"""
-This is the main library used for doing the G2 tests.
-
-Every function is a keyword callable from robot
-
-"""
-
 
 class ProtocolTesterLib:
+    """
+    Library for client and protocol testing (Test Suite).
+
+    In this library you will find all of the keywords needed to be able to write basic protocol and client tests.
+
+    """
 
     def __init__(self):
         self.client = ""
@@ -28,9 +26,7 @@ class ProtocolTesterLib:
         self.host2 = ""
 
         self.extra_arguments = ""
-        self.timestamp = ""
         self.remote_directory = ""
-
 
         self.process = None
         self.command = ""
@@ -43,9 +39,32 @@ class ProtocolTesterLib:
         self.HostError = "Host isn't implemented !"
 
     def set_client(self, client):
+        """
+        Sets the client that we are using. (Ex: srmcp, dccp, srmrm, arccp, etc.).
+
+        :param client: Client used to perform the command.
+
+        :return: /
+
+        """
         self.client = client
 
     def set_protocol(self, protocol1, port1=-1, protocol2=None, port2=-1):
+        """
+        Sets the protocol(s) and port(s) for the source(s)/destination(s) PROTOCOL://HOST:PORT (Ex: srm://prometheus.desy.de:8443).
+
+        Only set protocol2 and port2 if you are doing things like: srmcp srm://prometheus.desy.de:8443/ http://reference-2-13.desy.de:2880.
+
+        :param protocol1: Protocol for the first remote source/destination.
+
+        :param port1: Port for the first protocol of the first remote source/destination (If not set, will take value from env variables set in Jenkins).
+
+        :param protocol2: Protocol for the second remote source/destination.
+
+        :param port2: Port for the second protocol of the second source/destination.
+
+        :return: /
+        """
         self.protocol1 = protocol1
         if port1 < 0:
             self.port1 = PROTOCOL_PORTS[protocol1]
@@ -60,27 +79,86 @@ class ProtocolTesterLib:
                 self.port2 = port2
 
     def _set_local_file(self, local_file):
+        """
+        Private function that sets the local file URI.
+
+        When doing something with a local file it will preface the filename with the file:// prefix if the client needs.
+        this and when it isn't already present.
+
+        :param local_file: Absolute path to the file (Optionally can prefix it with file:// if needed).
+
+        :return: /
+
+        """
         if self.client not in not_file_uri_schemes and "file://" not in local_file:
             self.local_file = "file://" + local_file
         else:
             self.local_file = local_file
 
     def _set_remote_file(self, remote_file):
+        """
+        Private function that sets the path of the file on the remote source/destination.
+
+        Doesn't do anything special at the moment but is implemented for possible future special cases.
+
+        :param remote_file: Absolute path to file on remote source/destination.
+
+        :return: /
+        """
         self.remote_file = remote_file
 
     def _set_remote_directory(self, remote_directory):
+        """
+        Private function that sets the path of the directory on the remote source/destination/.
+
+
+        Doesn't do anything special at the moment but is implemented for possible future special cases.
+
+        :param remote_directory: Absolute path to directory on remote source/destination.
+
+        :return: /
+        """
         self.remote_directory = remote_directory
 
     def set_host(self, host1, host2=None):
+        """
+        Sets the remote host(s) (Ex: prometheus.desy.de, reference-2-13.desy.de, etc.).
+
+        Only set host2 if you are doing stuff that requires two remote sources/destinations (Ex: srmcp srm://prometheus.desy.de:8443/ http://reference-2-13.desy.de:2880).
+
+        :param host1: SUT of first dCache machine.
+
+        :param host2: SUT of second dCache machine (optional).
+
+        :return: /
+        """
         self.host1 = host1
 
         if host2:
             self.host2 = host2
 
     def set_extra_arguments(self, extra_arguments):
+        """
+        Sets extra tags that would be needed in the command call. (Ex: srmcp -retry_num=0 local_file remote_file, -retry_num=0 would have to be passed).
+
+        :param extra_arguments: Space seperated string of extra tags needed in the command line call (Ex: "-retry_num=0 -2").
+
+        :return: /
+
+        """
         self.extra_arguments = extra_arguments
 
     def get_remote_files_list(self, remote_directory):
+        """
+        Gets the list of files (no directories) in the remote directory.
+
+        For every ls client, you can implement a way to distill just the file names.
+
+        :param remote_directory: Absolute path to directory on remote source/destination
+
+        :return: A list of names of the files in the remote directory.
+
+        """
         self._set_remote_directory(remote_directory)
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
@@ -101,8 +179,14 @@ class ProtocolTesterLib:
 
         return file_names_list
 
-    def get_space_tokens(self, space_desc, remote_directory="/"):
-        self._set_remote_directory(remote_directory)
+    def get_space_tokens(self, space_desc):
+        """
+        Gets the space reservation tokens on the remote host.
+
+        :param space_desc: Space reservation description. This gets set when reserving space.
+
+        :return: /
+        """
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
 
@@ -112,12 +196,22 @@ class ProtocolTesterLib:
             if space_desc and "space_desc" not in self.extra_arguments:
                 specific_arguments += " -space_desc=" + space_desc
 
-        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + self.remote_directory
+        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + "/"
         self._execute_command(self.command)
 
-    def reserve_space(self, space_desc, guaranteed_size="2", retention_policy="REPLICA", remote_directory="/"):
+    def reserve_space(self, space_desc, guaranteed_size="2", retention_policy="REPLICA"):
+        """
+        Reserves space on the remote host.
 
-        self._set_remote_directory(remote_directory)
+        :param space_desc: Space reservation description.
+
+        :param guaranteed_size: Guaranteed size of the reserved space (Bytes).
+
+        :param retention_policy: Retention policy can be set to REPLICA, OUTPUT or CUSTODIAL.
+
+        :return: String of the space token (Ex: Output: Space token=42, returns "42").
+
+        """
 
         specific_arguments = " "
 
@@ -131,7 +225,7 @@ class ProtocolTesterLib:
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
 
-        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + self.remote_directory
+        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + "/"
         self._execute_command(self.command)
 
         space_token = -1
@@ -142,9 +236,14 @@ class ProtocolTesterLib:
 
         return space_token
 
-    def release_space(self, space_token, remote_directory="/"):
+    def release_space(self, space_token):
+        """
+        Releases space that was previously reserved on the remote host.
 
-        self._set_remote_directory(remote_directory)
+        :param space_token: Space token obtained after reserving space.
+
+        :return: /
+        """
 
         specific_arguments = " "
 
@@ -153,12 +252,22 @@ class ProtocolTesterLib:
                 specific_arguments += " -space_token=" + space_token
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
-        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + self.remote_directory
+        self.command = self.client + " " + self.extra_arguments + specific_arguments + self.host_string + "/"
         self._execute_command(self.command)
 
 
 
     def get_remote_directories_list(self, remote_directory):
+        """
+        Gets the list of directories in a remote directory.
+
+        For every ls client, you can implement a way to distill just the directories.
+
+        :param remote_directory: Directory of the remote host where we want to search for directories in.
+
+        :return: List of names of the directories in the remote directory.
+
+        """
         self._set_remote_directory(remote_directory)
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
@@ -180,7 +289,16 @@ class ProtocolTesterLib:
         return directories_list
 
     def copy_local_file(self, local_file, remote_file):
+        """
+        Copies a local file to a remote destination.
 
+        :param local_file: Absolute path to the file on the local machine
+
+        :param remote_file: Absolute path to the file on the remote host
+
+        :return: /
+
+        """
         if self.protocol1:
             self._set_local_file(local_file)
         else:
@@ -194,7 +312,16 @@ class ProtocolTesterLib:
         self._execute_command(self.command)
 
     def copy_remote_file(self, remote_file, local_file):
+        """
+        Copies a file from a remote source to the local machine
 
+        :param remote_file:  Absolute path of the remote file
+
+        :param local_file: Absolute path of the local destination
+
+        :return: /
+
+        """
         if self.protocol1:
             self._set_local_file(local_file)
         else:
@@ -214,7 +341,16 @@ class ProtocolTesterLib:
         self._execute_command(self.command)
 
     def copy_remote_to_remote(self, remote_file1, remote_file2):
+        """
+        Copies from one remote source to a remote destination
 
+        :param remote_file1: Absolute path of the remote file
+
+        :param remote_file2: Absolute path of the remote destination
+
+        :return: /
+
+        """
         self.local_file = remote_file1
         self.remote_file = remote_file2
 
@@ -225,6 +361,14 @@ class ProtocolTesterLib:
         self._execute_command(self.command)
 
     def remove_remote_file(self, remote_file):
+        """
+        Delete a remote file
+
+        :param remote_file: Absolute path of the file on the remote host
+
+        :return: /
+
+        """
         self._set_remote_file(remote_file)
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
@@ -233,6 +377,14 @@ class ProtocolTesterLib:
 
 
     def create_remote_directory(self, remote_directory):
+        """
+        Create a directory on a remote host
+
+        :param remote_directory: Absolute path of the directory on the remote host
+
+        :return: /
+
+        """
         self._set_remote_directory(remote_directory)
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
@@ -241,6 +393,14 @@ class ProtocolTesterLib:
 
 
     def remove_remote_directory(self, remote_directory):
+        """
+        Remove a directory on a remote host
+
+        :param remote_directory: Absolute path of the directory on the remote host
+
+        :return: /
+
+        """
         self._set_remote_directory(remote_directory)
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
@@ -248,6 +408,22 @@ class ProtocolTesterLib:
         self._execute_command(self.command)
 
     def change_remote_permissions(self, remote_directory, perm_type=None, owner=None, group=None, other=None):
+        """
+        Change the permissions of a remote directory
+
+        :param remote_directory: Absolute path of the directory on the remote host
+
+        :param perm_type: Permissions Type
+
+        :param owner: Config for Owner (X, W, WR, R, RX, RW, RWX)
+
+        :param group: Config for Group (X, W, WR, R, RX, RW, RWX)
+
+        :param other: Config for Other (X, W, WR, R, RX, RW, RWX)
+
+        :return: /
+
+        """
         specific_arguments = " "
 
         if self.client == "srm-set-permissions":
@@ -284,7 +460,15 @@ class ProtocolTesterLib:
         self._execute_command(self.command)
 
     def perform_arbitrary_command_on_remote_dir(self, remote_dir):
+        """
+        Perform arbitrary command line call using just the SET CLIENT, SET PROTOCOL, SET HOST and SET REMOTE DIR functions.
+        Console command=  Client + " " + Extra_arguments + " " + Protocol + Host + Port + Remote_Dir
 
+
+        :param remote_dir: Absolute path of the remote directory
+
+        :return: /
+        """
         self._set_remote_directory(remote_dir)
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
@@ -294,7 +478,14 @@ class ProtocolTesterLib:
 
 
     def _create_host_string(self, protocol, port, host):
-
+        """
+        Creates the host string by combining protocol, host and port:
+        Host string= Protocol + Host + Port
+        :param protocol: Protocol to use for talking to remote
+        :param port: Port that the protocol uses
+        :param host: Remote hostname
+        :return: /
+        """
         if not protocol:
             raise NotImplementedError(self.ProtocolError)
 
@@ -306,6 +497,11 @@ class ProtocolTesterLib:
         return host_string
 
     def _execute_command(self, command):
+        """
+        Execute the command in a shell.
+        :param command: Command to enter in a shell
+        :return: /
+        """
         print "Executing: ", command
         self.process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         self.output, self.error = self.process.communicate()
@@ -316,6 +512,16 @@ class ProtocolTesterLib:
 
 
     def error_should_contain(self, expected_error):
+        """
+        Checks the error output for the expected error.
+
+        Throws assertion error if it's wrong.
+
+        :param expected_error: Error to check if it's contained in the error output
+
+        :return: /
+
+        """
         errorstream = "STDOUT: " + self.output + " STDERR: " + self.error
 
         if expected_error not in errorstream:
@@ -324,6 +530,13 @@ class ProtocolTesterLib:
             raise AssertionError("Expected no error but got: " + errorstream)
 
     def command_should_execute_successfully(self):
+        """
+        Checks if the command executed successfully
+
+        Throws assertion error if something went wrong.
+
+        :return:
+        """
         client_executed_successfully = True
 
         if "error" in self.error or "ERROR" in self.error:
