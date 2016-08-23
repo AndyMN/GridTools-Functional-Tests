@@ -96,8 +96,8 @@ class ProtocolTesterLib:
 
         return file_names_list
 
-    def get_space_tokens(self, base_dir, space_desc=None):
-        self._set_remote_directory(base_dir)
+    def get_space_tokens(self, space_desc, remote_directory="/"):
+        self._set_remote_directory(remote_directory)
 
         self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
 
