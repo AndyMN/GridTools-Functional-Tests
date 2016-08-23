@@ -108,7 +108,36 @@ class ProtocolTesterLib:
         self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
         self._execute_command(self.command)
 
+    def reserve_space(self, space_desc, guaranteed_size="2", retention_policy="REPLICA", remote_directory="/"):
 
+        self._set_remote_directory(remote_directory)
+
+        if self.client == "srm-reserve-space":
+            if space_desc and "space_desc" not in self.extra_arguments:
+                self.extra_arguments += " -space_desc=" + space_desc
+            if guaranteed_size and "guaranteed_size" not in self.extra_arguments:
+                self.extra_arguments += " -guaranteed_size=" + guaranteed_size
+            if retention_policy and "retention_policy" not in self.extra_arguments:
+                self.extra_arguments += " -retention_policy=" + retention_policy
+
+        self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
+
+        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
+        self._execute_command(self.command)
+
+    def release_space(self, space_token, remote_directory="/"):
+
+        self._set_remote_directory(remote_directory)
+
+        if self.client == "srm-release-space":
+            if space_token and "space_token" not in self.extra_arguments:
+                self.extra_arguments += " -space_token=" + space_token
+
+        self.host_string = self._create_host_string(self.protocol1, self.port1, self.host1)
+        self.command = self.client + " " + self.extra_arguments + " " + self.host_string + self.remote_directory
+        self._execute_command(self.command)
+
+    
 
     def get_remote_directories_list(self, remote_directory):
         self._set_remote_directory(remote_directory)
