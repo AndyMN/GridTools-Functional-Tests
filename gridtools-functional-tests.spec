@@ -24,6 +24,5 @@ against it, along with a set of tests to verify the storage system works as expe
 %prep
 rm -rf $RPM_BUILD_ROOT/GridTools-Functional-Tests/
 rm -rf $RPM_BUILD_DIR/GridTools-Functional-Tests/
-rm -rf /scratch/jenkins/GridTools-Functional-Tests/
 wget -O $RPM_SOURCE_DIR/master.zip https://github.com/AndyMN/GridTools-Functional-Tests/archive/master/master.zip
-unzip -o $RPM_SOURCE_DIR/master.zip -d /scratch/jenkins/
+unzip -o $RPM_SOURCE_DIR/master.zip -d ${RPM_BUILD_DIR}
